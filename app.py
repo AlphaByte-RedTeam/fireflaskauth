@@ -1,7 +1,6 @@
 import os
 import smtplib
 import firebase_admin
-from os.path import join, dirname
 from flask import Flask
 from flask_restful import Resource, Api, reqparse
 from firebase_admin import auth, credentials
