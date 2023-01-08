@@ -31,7 +31,7 @@ smtp.login(
 )
 
 action_code_settings = auth.ActionCodeSettings(
-    url="https://www.unito.digital/",
+    url="https://www.unito.digital/auth/successful",
     handle_code_in_app=True,
     ios_bundle_id="io.flutter.flutter.app",
     android_package_name="com.example.unito",
@@ -50,3 +50,5 @@ def get_link() -> str:
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+smtp.close()
