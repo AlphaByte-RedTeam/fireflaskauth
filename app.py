@@ -1,9 +1,9 @@
 import os
 import re
 import smtplib
+from os import environ
 import firebase_admin
 from flask import Flask, request, jsonify
-from os import environ
 from markupsafe import escape
 from flask_restful import Api
 from firebase_admin import auth, credentials
