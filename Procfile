@@ -1,1 +1,1 @@
-web: gunicorn --bind 0.0.0.0:$PORT app:fireflaskauth
+web: gunicorn fireflaskauth.wsgi
