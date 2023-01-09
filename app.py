@@ -3,6 +3,7 @@ import re
 import smtplib
 import firebase_admin
 from flask import Flask, request, jsonify
+from os import environ
 from markupsafe import escape
 from flask_restful import Api
 from firebase_admin import auth, credentials
@@ -11,16 +12,28 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 api = Api(app)
 
+DOTENV_PATH = "secrets.env"
+load_dotenv(DOTENV_PATH)
+
+ENV_KEY = {
+    "type": "service_account",
+    "project_id": os.getenv("PROJECT_ID"),
+    "private_key_id": os.getenv("PRIVATE_KEY_ID"),
+    "private_key": environ["PRIVATE_KEY"].replace("\\n", "\n"),
+    "client_email": os.getenv("CLIENT_EMAIL"),
+    "client_id": os.getenv("CLIENT_ID"),
+    "auth_uri": os.getenv("AUTH_URI"),
+    "token_uri": os.getenv("TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_CERT_URL"),
+    "client_x509_cert_url": os.getenv("CLIENT_CERT_URL"),
+}
+
 # Check if Firebase App is already initialize
 if not firebase_admin._apps:
     # Initialize Firebase App
-    cred: credentials = credentials.Certificate(
-        "serviceAccountKey.json"
-    )
+    cred: credentials = credentials.Certificate(ENV_KEY)
     default_app = firebase_admin.initialize_app(cred)
 
-DOTENV_PATH = "secrets.env"
-load_dotenv(DOTENV_PATH)
 
 SMTP_SERVER_NAME: str = "smtp.mailersend.net"
 SMTP_PORT: int = 587
