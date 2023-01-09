@@ -16,7 +16,7 @@ if not firebase_admin._apps:
     # Initialize Firebase App
     cred: credentials = credentials.Certificate(
         "serviceAccountKey.json"
-    )  # Add your serviceAccountKey.json
+    )
     default_app = firebase_admin.initialize_app(cred)
 
 DOTENV_PATH = "secrets.env"
