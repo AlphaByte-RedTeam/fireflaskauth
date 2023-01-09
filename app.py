@@ -46,27 +46,18 @@ def hello():
     return "Hello, world"
 
 
-@app.route("/link", methods=["POST"])
+@app.route("/link", methods=["GET"])
 def generate_link():
     # Validate the request body
-    try:
-        data = request.get_json()
-        email = data["email"]
-    except (KeyError, TypeError):
-        return "Bad request", 400
-
-    # Validate the email
-    if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+    email = request.args.get("email")
+    if not email or not re.match(
+        r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email
+    ):
         return "Invalid email", 400
-
-    # Generate the sign in with email link
     try:
-        link = auth.generate_sign_in_with_email_link(
-            email, action_code_settings=action_code_settings
-        )
+        link = auth.generate_sign_in_with_email_link(email, action_code_settings)
     except Exception as e:
         return f"Error generating link: {e}", 500
-
     return jsonify({"link": link})
 
 
