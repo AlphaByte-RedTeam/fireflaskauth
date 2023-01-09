@@ -1,8 +1,10 @@
 import os
+import re
 import smtplib
 import firebase_admin
-from flask import Flask
-from flask_restful import Resource, Api, reqparse
+from flask import Flask, request, jsonify
+from markupsafe import escape
+from flask_restful import Api
 from firebase_admin import auth, credentials
 from dotenv import load_dotenv
 
@@ -38,16 +40,37 @@ action_code_settings = auth.ActionCodeSettings(
     android_minimum_version="12",
 )
 
-email: str = "andrew.avv03@gmail.com"
-link: str = auth.generate_sign_in_with_email_link(email, action_code_settings)
-
 
 @app.route("/")
-def get_link() -> str:
-    return f"{link}\n"
+def hello():
+    return "Hello, world"
+
+
+@app.route("/link", methods=["POST"])
+def generate_link():
+    # Validate the request body
+    try:
+        data = request.get_json()
+        email = data["email"]
+    except (KeyError, TypeError):
+        return "Bad request", 400
+
+    # Validate the email
+    if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+        return "Invalid email", 400
+
+    # Generate the sign in with email link
+    try:
+        link = auth.generate_sign_in_with_email_link(
+            email, action_code_settings=action_code_settings
+        )
+    except Exception as e:
+        return f"Error generating link: {e}", 500
+
+    return jsonify({"link": link})
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 
 smtp.close()
