@@ -1,1 +1,2 @@
-web: gunicorn --bind 0.0.0.0:$PORT fireflaskauth:app
+# Modify this Procfile to fit your needs
+web: gunicorn -b :$PORT fireflaskauth:app
